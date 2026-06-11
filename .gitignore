@@ -1,0 +1,23 @@
+# Dépendances — trop lourdes pour GitHub (des milliers de fichiers)
+node_modules/
+retrofit/node_modules/
+server/node_modules/
+
+# Fichiers secrets — NE JAMAIS mettre sur GitHub !
+server/.env
+retrofit/.env
+.env
+
+# Fichiers de build (générés automatiquement, pas besoin de les sauvegarder)
+retrofit/dist/
+server/dist/
+
+# Fichiers système macOS
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+
+# Cache Vite
+retrofit/.vite/

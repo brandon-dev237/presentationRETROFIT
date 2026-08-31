@@ -65,7 +65,7 @@ const SellerLogin = () => {
                 <p>Email</p>
                 {/* onChange met à jour le state email à chaque frappe */}
                 <input onChange={(e)=> setEmail(e.target.value)} value={email}
-                type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder='entrez votre email'
+                type="email" placeholder='entrez votre email'
                 className='border border-gray-200 rounded w-full p-2 mt-1 outline-primary' required />
 
             </div>
@@ -74,7 +74,7 @@ const SellerLogin = () => {
              <div className='w-full'>
                 <p>Mots de passe</p>
                 <input onChange={(e)=> setPassword(e.target.value)} value={password}
-                type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder='entrez votre mot de passe'
+                type="password" placeholder='entrez votre mot de passe'
                 className='border border-gray-200 rounded w-full p-2 mt-1 outline-primary' required />
 
             </div>

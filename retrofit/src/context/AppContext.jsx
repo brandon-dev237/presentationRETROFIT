@@ -48,7 +48,8 @@ export const AppContextProvider = ({ children }) => {
   });
 
   // Le texte tapé dans la barre de recherche
-  const [searchQuery, setSearchQuery] = useState({});
+  // initialisé comme string (vide) pour éviter les erreurs de .length
+  const [searchQuery, setSearchQuery] = useState('');
 
   // ---- RÉCUPÉRER L'UTILISATEUR CONNECTÉ ----
   // Cette fonction demande au serveur si l'utilisateur a un cookie valide
@@ -90,6 +91,7 @@ export const AppContextProvider = ({ children }) => {
   const fetchProducts = async () => {
     try {
       const { data } = await axios.get('/api/product/list');
+      console.log('fetchProducts response:', data);
       // On remplace les produits de démo seulement si on a de vrais produits
       if (data.success && data.products.length > 0) {
         setProducts(data.products);
@@ -151,6 +153,13 @@ export const AppContextProvider = ({ children }) => {
     return totalCount;
   }
 
+  // ---- VIDER COMPLÈTEMENT LE PANIER ----
+  // Vide le panier ET le localStorage pour éviter les données résiduelles
+  const clearCart = () => {
+    setCartItems({});
+    localStorage.removeItem('cartItems');
+  }
+
   // ---- CALCULER LE MONTANT TOTAL DU PANIER ----
   // Additionne le prix de chaque article multiplié par sa quantité
   const getCartAmount = () => {
@@ -205,6 +214,7 @@ export const AppContextProvider = ({ children }) => {
     setSearchQuery,
     getCartCount,    // Nombre total d'articles dans le panier
     getCartAmount,   // Montant total du panier
+    clearCart,       // Vider complètement le panier et localStorage
     axios            // Outil pour faire des requêtes au serveur
   };
 

@@ -15,12 +15,15 @@ export const addAddress = async(req, res)=>{
     try {
         // On récupère l'adresse saisie et l'identifiant de l'utilisateur
         // userId est ajouté automatiquement par le middleware authUser
-        const { address, userId } = req.body
+        const { address } = req.body
+        const userId = req.userId
+        console.log('[addAddress] userId:', userId);
+        console.log('[addAddress] address:', address);
 
-        // On crée l'adresse dans la base de données
-        // Le spread ...address copie tous les champs de l'adresse
-        // On ajoute également userId pour savoir à qui appartient cette adresse
+        if (!userId) return res.json({success: false, message: "Non autorisé"});
+
         await Address.create({...address, userId})
+        console.log('[addAddress] adresse sauvegardée avec succès');
 
         // On confirme que l'adresse a bien été ajoutée
         res.json({success: true, message: "Address added successfully"})
@@ -36,11 +39,11 @@ export const addAddress = async(req, res)=>{
 // Pour afficher la liste d'adresses dans la page panier
 export const getAddress = async(req, res)=>{
     try {
-        // On récupère l'identifiant de l'utilisateur (injecté par authUser)
-        const {userId} = req.body
+        const userId = req.userId
+        console.log('[getAddress] userId:', userId);
 
-        // On cherche toutes les adresses qui appartiennent à cet utilisateur
         const addresses = await Address.find({userId})
+        console.log('[getAddress] adresses trouvées:', addresses.length);
 
         // On renvoie la liste des adresses trouvées
         res.json({success: true, addresses})

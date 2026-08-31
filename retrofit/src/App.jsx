@@ -31,6 +31,7 @@ import SellerLogin from './components/seller/SellerLogin'; // Connexion vendeur
 import AddProduct from './pages/seller/AddProduct';   // Page ajout de produit
 import ProductList from './pages/seller/ProductList'; // Page liste des produits (vendeur)
 import Orders from './pages/seller/Orders';           // Page commandes (vendeur)
+import Loader from './pages/Loader';                  // Page de confirmation post-paiement Stripe
 
 const App = () => {
 
@@ -40,7 +41,7 @@ const isSellerPath = useLocation().pathname.includes ('seller');
 
 // On récupère les données globales : est-ce que le popup de connexion est ouvert ?
 // et est-ce que la personne connectée est le vendeur ?
-const {showUserLogin, isSeller} = useAppContext ()
+const {showUserLogin, isSeller, user} = useAppContext ()
 
   return (
     <div className='text-default min-h-screen text-gray-700 bg-white'   >
@@ -65,20 +66,23 @@ const {showUserLogin, isSeller} = useAppContext ()
            {/* Page tous les articles */}
            <Route path='/products'element={<AllProducts/>} />
 
+           {/* Page détail d'un produit (ex: /products/doudoune/123abc) — AVANT la catégorie ! */}
+           <Route path='/products/:category/:id'element={<ProductDetails/>} />
+
            {/* Page d'une catégorie spécifique (ex: /products/doudoune) */}
            <Route path='/products/:category'element={<ProductCategory/>} />
-
-           {/* Page détail d'un produit (ex: /products/doudoune/123abc) */}
-           <Route path='/products/:category/:id'element={<ProductDetails/>} />
 
            {/* Page du panier */}
            <Route path='/cart'element={<Cart/>} />
 
-           {/* Page pour ajouter une adresse de livraison */}
-           <Route path='/add-address'element={<AddAddress/>} />
+           {/* Page pour ajouter une adresse de livraison — connexion requise */}
+           <Route path='/add-address' element={user ? <AddAddress/> : <Navigate to='/' replace />} />
 
-           {/* Page pour voir ses commandes */}
-           <Route path='/my-orders'element={<MyOrders/>} />
+           {/* Page pour voir ses commandes — connexion requise */}
+           <Route path='/my-orders' element={user ? <MyOrders/> : <Navigate to='/' replace />} />
+
+           {/* Page de confirmation après paiement Stripe (/loader?next=orders) */}
+           <Route path='/loader' element={<Loader/>} />
 
            {/* Espace vendeur — si le vendeur est connecté, on affiche le dashboard
                sinon on affiche le formulaire de connexion vendeur */}

@@ -16,7 +16,7 @@ const AllProducts = () => {
   // Liste des produits après filtrage (selon la recherche)
   const [filteredProducts, setFilteredProducts] = useState([])
 
-  // Quand les produits ou la recherche changent, on refiltrage la liste
+  // Quand les produits ou la recherche changent, on refiltre la liste
   useEffect(() => {
     if (searchQuery.length > 0) {
       // Si l'utilisateur a tapé quelque chose dans la recherche,
@@ -32,7 +32,24 @@ const AllProducts = () => {
       setFilteredProducts(products)
     }
 
+    // logs de debug pour vérifier le contenu (JSON stringifié pour éviter les objets live)
+    try {
+      console.log('AllProducts - products', JSON.stringify(products))
+    } catch (e) {
+      console.log('AllProducts - products (stringify failed)', products)
+    }
+    try {
+      console.log('AllProducts - filteredProducts (state)', JSON.stringify(filteredProducts))
+    } catch (e) {
+      console.log('AllProducts - filteredProducts (state) (stringify failed)', filteredProducts)
+    }
+
   }, [products, searchQuery]) // Se re-déclenche si products ou searchQuery change
+
+  // Affiche la valeur de filteredProducts après qu'elle change (debug)
+  useEffect(() => {
+    console.log('AllProducts - filteredProducts (after update)', filteredProducts)
+  }, [filteredProducts])
 
   return (
     <div className='mt-16 flex flex-col'>
@@ -47,11 +64,9 @@ const AllProducts = () => {
           2 colonnes sur mobile, 3 sur tablette, 4 sur ordinateur */}
       <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-6  mt-6'>
         {filteredProducts
-          // On n'affiche que les produits disponibles en stock
-          .filter(product => product.inStock)
           // Pour chaque produit, on affiche une carte produit
-          .map((product, index) => (
-            <ProductCard key={index} product={product} />
+          .map((product) => (
+            <ProductCard key={product._id} product={product} />
           ))
         }
       </div>

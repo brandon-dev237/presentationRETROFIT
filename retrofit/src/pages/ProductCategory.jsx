@@ -26,7 +26,12 @@ const ProductCategory = () => {
 
     // On filtre les produits pour ne garder que ceux de la bonne catégorie
     const filteredProducts = products.filter(
-        (product) => product.category.toLowerCase() === category?.toLowerCase()
+        (product) => {
+            // product.category peut être un array ou une string
+            // On le traite comme un array pour être sûr
+            const categories = Array.isArray(product.category) ? product.category : [product.category];
+            return categories.some(cat => cat.toLowerCase() === category?.toLowerCase());
+        }
     )
 
     return (

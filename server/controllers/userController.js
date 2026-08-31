@@ -119,7 +119,7 @@ export const login = async (req,res)=>{
 export const isAuth = async (req,res)=> {
     try {
         // L'identifiant de l'utilisateur est injecté par le middleware authUser
-        const {userId} = req.body;
+        const userId = req.userId;
 
         // On cherche l'utilisateur dans la base de données
         // .select("-password") = on ne récupère PAS le mot de passe (sécurité)

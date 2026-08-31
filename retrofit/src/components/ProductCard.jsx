@@ -22,7 +22,11 @@ const ProductCard = ({ product }) => {
         // La carte entière est cliquable → redirige vers la page détail du produit
         <div
             className="border border-gray-500/20 rounded-md px-2 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-3 bg-white w-full cursor-pointer hover:shadow-md transition"
-            onClick={() => { navigate(`/products/${product.category.toLowerCase()}/${product._id}`); scrollTo(0, 0) }}
+            onClick={() => { 
+                const category = Array.isArray(product.category) ? product.category[0] : product.category;
+                navigate(`/products/${category.toLowerCase()}/${product._id}`); 
+                scrollTo(0, 0) 
+            }}
         >
             {/* Image du produit */}
             <div className="w-full h-24 sm:h-32 md:h-40 flex items-center justify-center overflow-hidden">
@@ -35,7 +39,7 @@ const ProductCard = ({ product }) => {
 
             <div className="mt-1 sm:mt-2">
                 {/* Catégorie du produit (en petit, grisé) */}
-                <p className="text-[clamp(0.55rem,1.5vw,0.75rem)] text-gray-500/60 truncate">{product.category}</p>
+                <p className="text-[clamp(0.55rem,1.5vw,0.75rem)] text-gray-500/60 truncate">{Array.isArray(product.category) ? product.category[0] : product.category}</p>
 
                 {/* Nom du produit */}
                 <p className="text-[clamp(0.65rem,1.8vw,1rem)] font-medium text-gray-700 truncate w-full leading-tight">

@@ -42,9 +42,7 @@ const onSubmitHandler = async (event) => {
         // On prépare les données du produit
         const productData = {
             name,
-            // split('\n') transforme le texte en tableau de lignes
-            // (chaque retour à la ligne devient un élément du tableau)
-            description: description.split('\n'),
+            description,
             category,
             price,
             offerPrice

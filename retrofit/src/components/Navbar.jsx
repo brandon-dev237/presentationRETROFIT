@@ -9,6 +9,7 @@ import React, { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'; // NavLink = lien de navigation
 import assets from '../assets/assets'; // Images et icônes
 import { useAppContext } from '../context/AppContext';
+import toast from 'react-hot-toast';
 
 
 const Navbar = () => {
@@ -16,10 +17,25 @@ const Navbar = () => {
      const [open, setOpen] = React.useState(false)
 
      // On récupère les données nécessaires depuis le contexte global
-     const {user,setUser,setShowUserLogin,navigate,setSearchQuery,searchQuery,getCartCount} = useAppContext();
+     const {user,setUser,setShowUserLogin,navigate,setSearchQuery,searchQuery,getCartCount,axios} = useAppContext();
 
      // Fonction de déconnexion : on efface l'utilisateur et on va à l'accueil
      const logout = async ()=>{
+
+         try {
+            const{data} = await axios.post ('/api/user/logout')
+            if(data.success){
+                toast.success(data.message)          
+                  setUser(null);   // On supprime l'utilisateur du contexte
+                  navigate('/')    // On redirige vers la page d'accueil
+            }else{
+                toast.error(data.message)
+            }
+         } catch (error) {
+            toast.error(error.message)
+         }
+
+
         setUser(null);   // On supprime l'utilisateur du contexte
         navigate('/')    // On redirige vers la page d'accueil
      }

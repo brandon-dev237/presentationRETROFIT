@@ -26,7 +26,8 @@ export const placeOrderCOD = async (req, res)=>{
     try {
         // On récupère l'identifiant utilisateur (injecté par authUser),
         // la liste des articles commandés, et l'adresse de livraison
-        const {userId, items, address} = req.body;
+        const {items, address} = req.body;
+        const userId = req.userId;
 
         // On vérifie que l'adresse et les articles sont bien présents
         if(!address || items.length === 0){
@@ -37,10 +38,10 @@ export const placeOrderCOD = async (req, res)=>{
         // reduce() parcourt chaque article et additionne les prix
         let amount = await items.reduce(async (acc, item)=>{
             // On cherche le produit dans la base de données pour avoir son prix réel
-            const product = await product.findById(item.product);
+            const prod = await product.findById(item.product);
 
             // On accumule le prix de l'article (prix * quantité)
-            return (await acc) + product.offerPrice * item.quantity;
+            return (await acc) + prod.offerPrice * item.quantity;
 
         }, 0)
 
@@ -69,7 +70,7 @@ export const placeOrderCOD = async (req, res)=>{
 export const getUserOrders = async (req, res)=> {
     try {
         // On récupère l'identifiant de l'utilisateur
-        const {userId} = req.body;
+        const userId = req.userId;
 
         // On cherche toutes les commandes de cet utilisateur
         // On filtre : seulement les commandes COD OU les commandes payées en ligne
@@ -93,7 +94,8 @@ export const getUserOrders = async (req, res)=> {
 export const placeOrderStripe = async (req, res) => {
     try {
         // On récupère les mêmes informations que pour la commande COD
-        const { userId, items, address } = req.body;
+        const { items, address } = req.body;
+        const userId = req.userId;
 
         // Vérification des données
         if (!address || items.length === 0) {
@@ -120,9 +122,9 @@ export const placeOrderStripe = async (req, res) => {
             const prod = await product.findById(item.product);
             return {
                 price_data: {
-                    currency: 'xaf', // Franc CFA
+                    currency: 'eur',
                     product_data: { name: prod.name }, // nom du produit affiché sur Stripe
-                    unit_amount: Math.round(prod.offerPrice * 1.02), // prix avec taxe
+                    unit_amount: Math.round(prod.offerPrice * 1.02 * 100), // prix avec taxe, en centimes
                 },
                 quantity: item.quantity, // quantité commandée
             };

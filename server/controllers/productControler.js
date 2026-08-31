@@ -7,6 +7,7 @@
 
 // On importe cloudinary pour envoyer les images sur le cloud
 import {v2 as cloudinary} from "cloudinary"
+import mongoose from "mongoose"
 
 // On importe le modèle Product pour interagir avec la base de données
 import product from "../models/Product.js"
@@ -85,13 +86,13 @@ export const productList = async (req, res)=>{
 // On donne l'identifiant (id) du produit et on reçoit tous ses détails
 export const productById = async (req, res)=>{
     try {
-        // On récupère l'identifiant du produit demandé
         const { id } = req.body
 
-        // On cherche le produit dans la base de données par son identifiant unique
-        const productData = await product.findById(id)
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.json({ success: false, message: "Identifiant de produit invalide" })
+        }
 
-        // On renvoie les données du produit trouvé
+        const productData = await product.findById(id)
         res.json({success: true, product: productData})
 
     } catch (error) {
@@ -105,11 +106,12 @@ export const productById = async (req, res)=>{
 // (comme mettre une étiquette "épuisé" sur un article)
 export const changeStock = async (req, res)=>{
     try {
-        // On récupère l'identifiant du produit et la nouvelle valeur de stock
-        // inStock = true signifie disponible, false signifie épuisé
         const { id, inStock } = req.body
 
-        // On met à jour le champ inStock du produit dans la base de données
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.json({ success: false, message: "Identifiant de produit invalide" })
+        }
+
         await product.findByIdAndUpdate(id, {inStock})
 
         // On confirme que la mise à jour a réussi

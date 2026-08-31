@@ -27,7 +27,7 @@ const ProductSchema = new mongoose.Schema({
     image : {type: Array, required: true},
 
     // La catégorie du produit (ex: "doudoune", "jogging") — obligatoire
-    category : {type: Array, required: true},
+    category : {type: String, required: true},
 
     // Est-ce que le produit est en stock ?
     // Par défaut c'est true (oui, en stock)

@@ -30,7 +30,7 @@ userRouter.get('/is-auth',authUser,isAuth)
 
 // POST /api/user/logout — Se déconnecter
 // authUser vérifie qu'on est bien connecté avant de déconnecter
-userRouter.post('/logout',authUser,logout)
+userRouter.post('/logout',logout)
 
 // On exporte le routeur pour l'utiliser dans server.js
 export default userRouter

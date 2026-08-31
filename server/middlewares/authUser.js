@@ -31,9 +31,7 @@ const authUser = async (req,res, next)=>{
 
         // Si le jeton contient bien un identifiant utilisateur (id)
         if(tokenDecode.id){
-            // On ajoute l'identifiant de l'utilisateur dans la requête
-            // Ainsi, les fonctions suivantes savent qui fait la demande
-            req.body.userId = tokenDecode.id;
+            req.userId = tokenDecode.id;
         }else{
             // Le jeton est valide mais ne contient pas d'ID — c'est suspect
             return res.status(401).json ({ success: false , message: 'Not Authorized'});

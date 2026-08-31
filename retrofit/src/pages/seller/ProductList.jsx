@@ -7,24 +7,33 @@
 
 import React, { useState } from 'react'
 import { useAppContext } from '../../context/AppContext'
+import axios from 'axios'
+import toast from 'react-hot-toast'
 
 const ProductList = () => {
 
     // On récupère la liste des produits et le symbole monétaire depuis le contexte
-    const { products, currency } = useAppContext()
+    const { products, currency , axios, fetchProducts} = useAppContext()
 
     // stockOverrides = modifications temporaires du stock non encore sauvegardées
     // C'est un objet { productId: true/false } pour les changements locaux
     const [stockOverrides, setStockOverrides] = useState({})
 
     // Cette fonction bascule le stock d'un produit (en stock ↔ épuisé)
-    const toggleStock = (id) => {
-        setStockOverrides(prev => {
-            // On récupère la valeur actuelle : soit la valeur modifiée, soit la valeur originale
-            const current = prev[id] !== undefined ? prev[id] : products.find(p => p._id === id)?.inStock
-            // On inverse la valeur (true → false, false → true)
-            return { ...prev, [id]: !current }
-        })
+    const toggleStock = async (id, inStock)=> {
+     try {
+        const {data} = await axios.post('/api/product/stock',{id, inStock});
+        if (data.success){
+            fetchProducts();
+            toast.success(data.message)
+        }else{
+            toast.error(data.message)
+        }
+     } catch (error) {
+        toast.error(data.message)
+        
+     }
+        
     }
 
     // Cette fonction retourne le statut de stock affiché pour un produit
@@ -77,14 +86,14 @@ const ProductList = () => {
                                     <td className="px-4 py-3">
                                         <label className="relative inline-flex items-center cursor-pointer text-gray-900 gap-3">
                                             {/* Checkbox cachée qui gère l'état de l'interrupteur */}
-                                            <input
+                                            <input 
+                                            onClick={()=> toggleStock(product._id,!product.inStock)} checked={product.inStock}
                                                 type="checkbox"
                                                 className="sr-only peer"
-                                                checked={isInStock(product)} // Coché si en stock
-                                                onChange={() => toggleStock(product._id)} // Bascule au changement
+                                              
                                             />
                                             {/* Fond de l'interrupteur : gris si off, bleu si on */}
-                                            <div className="w-12 h-7 bg-slate-300 rounded-full peer peer-checked:bg-blue-600 transition-colors duration-200"></div>
+                                            <div className="w-12 h-7 bg-slate-300 rounded-full peer peer-checked:bg-primary transition-colors duration-200"></div>
                                             {/* Bouton rond qui glisse de gauche à droite */}
                                             <span className="dot absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-5"></span>
                                         </label>

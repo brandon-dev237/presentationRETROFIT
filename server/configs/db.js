@@ -7,6 +7,12 @@
 
 // On importe mongoose — c'est l'outil qui parle avec MongoDB (notre base de données)
 import mongoose from "mongoose"
+import dns from "dns"
+
+// Certains réseaux (ex: WiFi de résidence/campus) bloquent les requêtes DNS SRV
+// que Node utilise pour résoudre les URI "mongodb+srv://". On force des DNS publics
+// pour éviter l'erreur "querySrv ECONNREFUSED".
+dns.setServers(["8.8.8.8", "1.1.1.1"])
 
 // Cette fonction essaie de se connecter à la base de données
 // "async" veut dire qu'on attend que la connexion soit faite avant de continuer

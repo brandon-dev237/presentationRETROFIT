@@ -32,7 +32,11 @@ const ProductDetails = () => {
             // On fait une copie de la liste de produits pour ne pas modifier l'originale
             let productscopy = products.slice();
             // On filtre pour ne garder que les produits de la même catégorie
-            productscopy = productscopy.filter((item) => product.category === item.category);
+            const productCategory = Array.isArray(product.category) ? product.category : [product.category];
+            productscopy = productscopy.filter((item) => {
+                const itemCategory = Array.isArray(item.category) ? item.category : [item.category];
+                return productCategory.some(cat => itemCategory.includes(cat));
+            });
             // On prend au maximum 5 produits similaires
             setRelatedproducts(productscopy.slice(0, 5));
         }
@@ -57,7 +61,10 @@ const ProductDetails = () => {
             <p className="text-sm text-gray-500">
                 <span className="cursor-pointer hover:underline" onClick={() => navigate("/")}>Accueil</span> /
                 <span className="cursor-pointer hover:underline" onClick={() => navigate("/products")}> Produits</span> /
-                <span className="cursor-pointer hover:underline" onClick={() => navigate(`/products/${product.category.toLowerCase()}`)}> {product.category}</span> /
+                <span className="cursor-pointer hover:underline" onClick={() => {
+                    const category = Array.isArray(product.category) ? product.category[0] : product.category;
+                    navigate(`/products/${category.toLowerCase()}`);
+                }}> {Array.isArray(product.category) ? product.category[0] : product.category}</span> /
                 <span className="text-primary"> {product.name}</span>
             </p>
 

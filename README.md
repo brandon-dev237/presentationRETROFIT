@@ -32,9 +32,43 @@ docker compose up
 
 Le code source est monté en volume : les modifications sont reprises à chaud, comme en local sans Docker.
 
-## Déploiement en production
+## Déploiement sur Railway
 
-Le déploiement utilise [`docker-compose.prod.yml`](docker-compose.prod.yml), qui construit des images figées (pas de hot-reload, pas de volumes montés) :
+C'est la méthode utilisée pour ce projet. Railway ne lit pas directement `docker-compose.prod.yml` pour un monorepo — on crée deux services distincts dans le même projet Railway, chacun pointant vers un sous-dossier du repo GitHub.
+
+### 1. Service backend
+
+1. Nouveau service → **GitHub Repo** → sélectionner ce repo
+2. Settings → Source → **Root Directory** : `server`
+3. Railway détecte automatiquement `server/Dockerfile` (déjà en mode production)
+4. Settings → Variables : renseigner toutes les variables de [server/.env.example](server/.env.example), avec `NODE_ENV=production`
+5. Settings → Networking → **Generate Domain** → noter l'URL générée (ex. `retrofit-api.up.railway.app`)
+
+### 2. Service frontend
+
+1. Nouveau service → même repo GitHub
+2. Root Directory : `retrofit`
+3. Comme `retrofit/` contient deux Dockerfiles, ajouter la variable `RAILWAY_DOCKERFILE_PATH=Dockerfile.prod` pour que Railway utilise la version production (build Vite + nginx) plutôt que la version dev
+4. Variables : `VITE_BACKEND_URL` = l'URL du backend générée à l'étape précédente, `VITE_CURRENCY=$` — Railway les transmet automatiquement au build (les `ARG` sont déjà déclarés dans [retrofit/Dockerfile.prod](retrofit/Dockerfile.prod))
+5. Generate Domain → noter l'URL générée (ex. `retrofit-app.up.railway.app`)
+
+### 3. Boucler la configuration
+
+Retourner sur le service backend et mettre à jour `FRONTEND_URL` avec l'URL du frontend obtenue à l'étape 2, puis redéployer.
+
+Mettre à jour l'URL du webhook Stripe pour qu'elle pointe vers `https://<domaine-backend>/api/order/stripe/webhook`.
+
+### 4. Domaine personnalisé (optionnel)
+
+Sur chaque service : Settings → Public Networking → **+ Custom Domain**. Railway fournit un enregistrement **CNAME et un TXT** à ajouter chez le registrar du domaine — les deux sont obligatoires (sans le TXT, le domaine renvoie une 404 même si le CNAME est propagé). Une fois les domaines personnalisés vérifiés, mettre à jour `FRONTEND_URL` et `VITE_BACKEND_URL` en conséquence (et redéployer le frontend, puisque cette variable est figée au build).
+
+### 5. Redéploiements
+
+Railway redéploie automatiquement à chaque `git push` sur `main`. Un changement de variable d'environnement suffit à redéclencher un déploiement du service concerné.
+
+## Déploiement alternatif avec Docker Compose (VPS)
+
+Si un jour l'hébergement passe sur un VPS plutôt que Railway, [`docker-compose.prod.yml`](docker-compose.prod.yml) construit des images figées (pas de hot-reload, pas de volumes montés) :
 
 - **backend** : image Node buildée avec `npm install --omit=dev`, démarrée avec `npm start`
 - **frontend** : build multi-stage — `vite build` puis les fichiers statiques sont servis par nginx ([retrofit/Dockerfile.prod](retrofit/Dockerfile.prod), [retrofit/nginx.conf](retrofit/nginx.conf))

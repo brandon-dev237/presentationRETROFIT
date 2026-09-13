@@ -11,17 +11,19 @@ import assets, { features } from '../assets/assets' // features = liste des argu
 
 const BottomBanner = () => {
   return (
-    // Conteneur relatif pour superposer les arguments sur l'image de fond
-    <div className='relative mt-12 sm:mt-16 md:mt-24'>
+    // Sur mobile : image puis carte empilées normalement (pas de superposition,
+    // le texte a besoin de plus de hauteur que l'image n'en offre).
+    // Sur desktop (md:) : conteneur relatif, carte superposée en absolu sur l'image.
+    <div className='mt-12 sm:mt-16 md:mt-24 md:relative'>
       {/* Image de fond desktop */}
       <img src={assets.bottomBannerImage} alt="banner" className='w-full hidden md:block' />
       {/* Image de fond mobile */}
       <img src={assets.bottomBannerImageSm} alt="banner" className='w-full md:hidden' />
 
-      {/* Contenu superposé sur la bannière — aligné à droite sur desktop */}
-      <div className='absolute inset-0 flex items-center justify-center md:justify-end md:pr-24 px-4 sm:px-6 md:px-0'>
-        {/* Carte blanche semi-transparente sur mobile, transparente sur desktop */}
-        <div className='bg-white/80 md:bg-transparent rounded-xl md:rounded-none p-3 sm:p-4 md:p-0 w-full md:w-auto max-w-[55%] sm:max-w-xs md:max-w-sm'>
+      {/* Contenu : bloc normal sous l'image sur mobile, superposé et aligné à droite sur desktop */}
+      <div className='mt-4 md:mt-0 md:absolute md:inset-0 flex items-center justify-center md:justify-end md:pr-24 px-4 sm:px-6 md:px-0'>
+        {/* Carte pleine largeur sur mobile, semi-transparente et superposée sur desktop */}
+        <div className='bg-primary/5 md:bg-transparent rounded-xl md:rounded-none p-4 md:p-0 w-full md:w-auto max-w-full sm:max-w-xs md:max-w-sm'>
 
           {/* Titre de la section */}
           <h1 className='text-xs sm:text-sm md:text-base lg:text-xl font-semibold text-black mb-2 sm:mb-3 md:mb-4'>

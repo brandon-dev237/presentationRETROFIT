@@ -153,12 +153,12 @@ const Cart = () => {
                                 const category = (Array.isArray(product.category) ? product.category[0] : product.category) || 'divers';
                                 navigate(`/products/${category.toLowerCase()}/${product._id}`);
                                 scrollTo(0, 0)
-                            }} className="cursor-pointer w-24 h-24 flex items-center justify-center border border-gray-300 rounded overflow-hidden">
+                            }} className="cursor-pointer w-16 h-16 md:w-24 md:h-24 shrink-0 flex items-center justify-center border border-gray-300 rounded overflow-hidden">
                                 <img className="max-w-full h-full object-cover" src={product.image[0]} alt={product.name} />
                             </div>
-                            <div>
-                                {/* Nom du produit (caché sur mobile) */}
-                                <p className="hidden md:block font-semibold">{product.name}</p>
+                            <div className="min-w-0">
+                                {/* Nom du produit — tronqué si trop long, visible sur toutes les tailles d'écran */}
+                                <p className="font-semibold truncate text-sm md:text-base">{product.name}</p>
                                 <div className="font-normal text-gray-500/70">
                                     <p>taille: <span>{product.size || "N/A"}</span></p>
                                     <div className='flex items-center gap-2'>

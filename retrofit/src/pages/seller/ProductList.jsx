@@ -79,9 +79,9 @@ const ProductList = () => {
                         {/* En-têtes du tableau */}
                         <thead className="text-gray-900 text-sm text-left">
                             <tr>
-                                <th className="px-4 py-3 font-semibold truncate">Produit</th>
-                                <th className="px-4 py-3 font-semibold truncate">Categorie</th>
-                                <th className="px-4 py-3 font-semibold truncate hidden md:table-cell">Prix de Vente</th>
+                                <th className="px-4 py-3 font-semibold truncate w-1/2 sm:w-auto">Produit</th>
+                                <th className="px-4 py-3 font-semibold truncate hidden sm:table-cell">Categorie</th>
+                                <th className="px-4 py-3 font-semibold truncate">Prix de Vente</th>
                                 <th className="px-4 py-3 font-semibold truncate">En Stock</th>
                             </tr>
                         </thead>
@@ -91,20 +91,20 @@ const ProductList = () => {
                             {realProducts.map((product) => (
                                 <tr key={product._id} className="border-t border-gray-500/20">
 
-                                    {/* Colonne 1 : Image + Nom du produit */}
-                                    <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
-                                        <div className="border border-gray-300 rounded overflow-hidden">
+                                    {/* Colonne 1 : Image + Nom du produit (toujours visible, même sur mobile) */}
+                                    <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center gap-2 md:gap-3 min-w-0">
+                                        <div className="border border-gray-300 rounded overflow-hidden shrink-0">
                                             {/* Première image du produit */}
-                                            <img src={product.image[0]} alt={product.name} className="w-16 h-16 object-contain" />
+                                            <img src={product.image[0]} alt={product.name} className="w-10 h-10 md:w-16 md:h-16 object-contain" />
                                         </div>
-                                        <span className="truncate max-sm:hidden w-full">{product.name}</span>
+                                        <span className="truncate min-w-0">{product.name}</span>
                                     </td>
 
-                                    {/* Colonne 2 : Catégorie */}
-                                    <td className="px-4 py-3">{product.category}</td>
+                                    {/* Colonne 2 : Catégorie (cachée sur mobile, la place manque) */}
+                                    <td className="px-4 py-3 hidden sm:table-cell">{product.category}</td>
 
-                                    {/* Colonne 3 : Prix (caché sur mobile) */}
-                                    <td className="px-4 py-3 hidden md:table-cell">{currency}{product.offerPrice}</td>
+                                    {/* Colonne 3 : Prix (toujours visible, même sur mobile) */}
+                                    <td className="px-4 py-3">{currency}{product.offerPrice}</td>
 
                                     {/* Colonne 4 : Toggle stock (interrupteur on/off) */}
                                     <td className="px-4 py-3">

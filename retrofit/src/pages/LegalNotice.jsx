@@ -1,9 +1,10 @@
 // ============================================================
 // PAGE MENTIONS LÉGALES
-// Informations obligatoires sur l'éditeur du site, l'hébergement
-// et la propriété intellectuelle (article 6-III de la LCEN).
-// Les valeurs entre crochets [ ] sont des exemples à remplacer
-// par les vraies informations de l'entreprise avant mise en ligne.
+// RetroFit est un projet de démonstration (portfolio/étudiant), pas une
+// société immatriculée : il n'y a donc pas de SIRET, RCS ni numéro de TVA
+// à afficher. Si le projet devient un jour une vraie activité commerciale,
+// il faudra remplacer la section "Éditeur du site" par les informations
+// réelles de l'entreprise (raison sociale, SIRET, siège social, etc.).
 // ============================================================
 
 const LegalNotice = () => {
@@ -16,23 +17,18 @@ const LegalNotice = () => {
             <section className='mb-8'>
                 <h2 className='text-lg font-medium text-gray-800 mb-2'>Éditeur du site</h2>
                 <p>
-                    Le site RetroFit est édité par <strong>[Raison sociale / Nom de l'entreprise]</strong>,
-                    [forme juridique, ex : SASU au capital de X €], immatriculée au Registre du Commerce
-                    et des Sociétés de [ville] sous le numéro SIRET [XXX XXX XXX XXXXX].
-                </p>
-                <p className='mt-2'>
-                    Siège social : [adresse complète]<br />
-                    Numéro de TVA intracommunautaire : [FRXX XXXXXXXXX]<br />
-                    Directeur de la publication : [Nom et prénom]<br />
-                    Contact : [email de contact] — [numéro de téléphone]
+                    Le site RetroFit est un <strong>projet de démonstration</strong> réalisé dans un cadre
+                    étudiant/personnel. Il ne constitue pas une activité commerciale réelle et n'est édité
+                    par aucune société immatriculée : aucun numéro SIRET, RCS ou de TVA intracommunautaire
+                    ne s'applique.
                 </p>
             </section>
 
             <section className='mb-8'>
                 <h2 className='text-lg font-medium text-gray-800 mb-2'>Hébergement</h2>
                 <p>
-                    Le site est hébergé par <strong>[nom de l'hébergeur, ex : Vercel Inc. / OVH SAS]</strong>,
-                    [adresse de l'hébergeur].
+                    Le site est hébergé par <strong>Railway Corporation</strong>, 251 Little Falls Drive,
+                    Wilmington, Delaware 19808, États-Unis.
                 </p>
                 <p className='mt-2'>
                     La base de données est hébergée par MongoDB Atlas (MongoDB, Inc.).
@@ -63,9 +59,10 @@ const LegalNotice = () => {
             <section>
                 <h2 className='text-lg font-medium text-gray-800 mb-2'>Médiation et litiges</h2>
                 <p>
-                    Conformément aux articles L.616-1 et R.616-1 du Code de la consommation, en cas de
-                    litige non résolu directement avec RetroFit, le client peut recourir gratuitement au
-                    service de médiation [nom du médiateur de la consommation].
+                    RetroFit étant un site de démonstration, les paiements effectués via Stripe sont
+                    réalisés en mode test : aucune vente réelle n'a lieu et aucune somme n'est débitée.
+                    Les dispositions du Code de la consommation relatives à la médiation ne s'appliquent
+                    donc pas en l'état.
                 </p>
             </section>
         </div>

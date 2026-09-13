@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /seller
+Disallow: /add-address
+Disallow: /my-orders
+Disallow: /cart
+
+Sitemap: https://retrofitboutique.com/sitemap.xml

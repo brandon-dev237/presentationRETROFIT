@@ -99,7 +99,7 @@ const Navbar = () => {
             </div>
 
              {/* Partie droite sur mobile : panier + bouton menu hamburger */}
-             <div className='flex items-center gab-6 sm:hidden'>
+             <div className='flex items-center gap-6 sm:hidden'>
                     {/* Icône panier mobile */}
                     <div onClick={()=> navigate('/cart')} className="relative cursor-pointer">
                    <img src={assets.nav_cart_icon} alt="icone_cart" className='w-6 h-6 opacity-80' />

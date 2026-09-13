@@ -83,12 +83,16 @@ const Navbar = () => {
                     connecter
                 </button>)
                 :(
-                    // Si l'utilisateur est connecté → menu déroulant avec ses options
-                    <div className='relative group'>
+                    // Si l'utilisateur est connecté → nom + menu déroulant avec ses options
+                    <div className='relative group flex items-center gap-2 cursor-pointer'>
                         {/* Photo de profil — au survol, le menu apparaît */}
                         <img src={assets.profile_icon} className='w-7 h-7' alt=" profil" />
+                        {/* Nom de l'utilisateur connecté, pour savoir qui est connecté d'un coup d'œil */}
+                        <span className='max-w-[120px] truncate text-sm font-medium' title={user.name}>{user.name}</span>
                         {/* Menu déroulant caché par défaut, visible au survol (group-hover) */}
-                        <ul className='absolute top-10 right-0 bg-white shadow border border-gray-200 py-2.5 w-30 rounded-md text-sm z-40 invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300'>
+                        <ul className='absolute top-10 right-0 bg-white shadow border border-gray-200 py-2.5 w-40 rounded-md text-sm z-40 invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300'>
+                            {/* Rappel de l'email du compte connecté */}
+                            <li className='px-3 pb-2 mb-1 border-b border-gray-200 text-gray-400 text-xs truncate' title={user.email}>{user.email}</li>
                             {/* Lien vers la page des commandes */}
                             <li onClick={()=> navigate ('/my-orders')} className='p-1.5 pl-3 hover:bg-primary/10 cursor-pointer' >Mes Commandes </li>
                             {/* Bouton de déconnexion */}
@@ -115,6 +119,10 @@ const Navbar = () => {
             {/* Menu mobile — s'affiche seulement quand open === true */}
          {   open && (
             <div className={`${open ? 'flex' : 'hidden'} absolute top-[60px] left-0 w-full bg-white shadow-md py-4 flex-col items-start gap-2 px-5 text-sm md:hidden z-30`}>
+                {/* Rappel de l'utilisateur connecté, visible seulement si connecté */}
+                {user &&
+                <p className='text-xs text-gray-400 pb-2 mb-1 border-b border-gray-200 w-full truncate'>Connecté : <span className='font-medium text-gray-700'>{user.name}</span></p>
+                }
                 {/* Liens de navigation mobile — chaque clic ferme aussi le menu */}
                 <NavLink to="/" onClick={()=> setOpen(false)} >Accueil</NavLink>
                 <NavLink to="/products" onClick={()=> setOpen(false)} >Nos Produits </NavLink>

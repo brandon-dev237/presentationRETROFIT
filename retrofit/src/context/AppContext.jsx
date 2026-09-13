@@ -65,6 +65,10 @@ export const AppContextProvider = ({ children }) => {
   // la commande côté serveur ("Cast to ObjectId failed").
   const [products, setProducts] = useState([]);
 
+  // true tant que fetchProducts n'a pas répondu — permet d'afficher un skeleton
+  // de chargement plutôt qu'une grille vide pendant le premier chargement
+  const [isProductsLoading, setIsProductsLoading] = useState(true);
+
   // Le panier — on le charge depuis localStorage pour le conserver entre les visites
   // localStorage c'est la mémoire du navigateur qui reste même après fermeture
   const [cartItems, setCartItems] = useState(() => {
@@ -121,12 +125,13 @@ export const AppContextProvider = ({ children }) => {
   const fetchProducts = async () => {
     try {
       const { data } = await axios.get('/api/product/list');
-      console.log('fetchProducts response:', data);
       if (data.success) {
         setProducts(data.products);
       }
     } catch {
       // En cas d'erreur, la liste reste vide plutôt que d'afficher des produits inventés
+    } finally {
+      setIsProductsLoading(false);
     }
   };
 
@@ -249,6 +254,7 @@ export const AppContextProvider = ({ children }) => {
     showUserLogin,   // Afficher/cacher le popup de connexion
     setShowUserLogin,
     products,        // Liste de tous les produits
+    isProductsLoading, // true tant que la liste de produits n'a pas encore été chargée
     currency,        // Symbole monétaire (€)
     fetchProducts,   // Recharger les produits
     addToCart,       // Ajouter un article au panier

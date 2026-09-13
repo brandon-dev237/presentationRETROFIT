@@ -7,11 +7,12 @@
 import React, { useEffect, useState } from 'react'
 import { useAppContext } from '../context/AppContext'
 import ProductCard from '../components/ProductCard' // Carte d'un seul produit
+import ProductCardSkeleton from '../components/ProductCardSkeleton' // Placeholder pendant le chargement
 
 const AllProducts = () => {
 
   // On récupère la liste des produits et la recherche depuis le contexte global
-  const { products, searchQuery } = useAppContext()
+  const { products, isProductsLoading, searchQuery } = useAppContext()
 
   // Liste des produits après filtrage (selon la recherche)
   const [filteredProducts, setFilteredProducts] = useState([])
@@ -31,25 +32,7 @@ const AllProducts = () => {
       // Si la recherche est vide, on affiche tous les produits
       setFilteredProducts(products)
     }
-
-    // logs de debug pour vérifier le contenu (JSON stringifié pour éviter les objets live)
-    try {
-      console.log('AllProducts - products', JSON.stringify(products))
-    } catch (e) {
-      console.log('AllProducts - products (stringify failed)', products)
-    }
-    try {
-      console.log('AllProducts - filteredProducts (state)', JSON.stringify(filteredProducts))
-    } catch (e) {
-      console.log('AllProducts - filteredProducts (state) (stringify failed)', filteredProducts)
-    }
-
   }, [products, searchQuery]) // Se re-déclenche si products ou searchQuery change
-
-  // Affiche la valeur de filteredProducts après qu'elle change (debug)
-  useEffect(() => {
-    console.log('AllProducts - filteredProducts (after update)', filteredProducts)
-  }, [filteredProducts])
 
   return (
     <div className='mt-16 flex flex-col'>
@@ -63,11 +46,14 @@ const AllProducts = () => {
       {/* Grille de produits — s'adapte selon la taille de l'écran
           2 colonnes sur mobile, 3 sur tablette, 4 sur ordinateur */}
       <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-6  mt-6'>
-        {filteredProducts
-          // Pour chaque produit, on affiche une carte produit
-          .map((product) => (
-            <ProductCard key={product._id} product={product} />
-          ))
+        {isProductsLoading
+          // Pendant le chargement : squelettes animés plutôt qu'une grille vide
+          ? Array(8).fill(0).map((_, i) => <ProductCardSkeleton key={i} />)
+          : filteredProducts
+            // Pour chaque produit, on affiche une carte produit
+            .map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))
         }
       </div>
 

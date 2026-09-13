@@ -30,6 +30,7 @@ import productRouter from './routes/productRoute.js'; // chemins pour les produi
 import cartRouter from './routes/cartRoute.js';       // chemins pour le panier
 import addressRouter from './routes/addressRoute.js'; // chemins pour les adresses
 import orderRouter from './routes/orderRoute.js';     // chemins pour les commandes
+import newsletterRouter from './routes/newsletterRoute.js'; // chemins pour la newsletter
 
 // On crée notre application serveur — c'est comme ouvrir un magasin
 const app = express();
@@ -94,6 +95,9 @@ app.use('/api/address', addressRouter)
 
 // Toutes les routes commandes commencent par /api/order
 app.use('/api/order', orderRouter)
+
+// Toutes les routes newsletter commencent par /api/newsletter
+app.use('/api/newsletter', newsletterRouter)
 
 // On démarre le serveur et on l'écoute sur le port choisi
 // Quand c'est prêt, on affiche un message dans la console

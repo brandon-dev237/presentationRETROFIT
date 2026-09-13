@@ -110,11 +110,12 @@ const ProductList = () => {
                                     <td className="px-4 py-3">
                                         <label className="relative inline-flex items-center cursor-pointer text-gray-900 gap-3">
                                             {/* Checkbox cachée qui gère l'état de l'interrupteur */}
-                                            <input 
+                                            <input
                                             onClick={()=> toggleStock(product._id,!product.inStock)} checked={product.inStock}
                                                 type="checkbox"
+                                                aria-label={`${product.name} en stock`}
                                                 className="sr-only peer"
-                                              
+
                                             />
                                             {/* Fond de l'interrupteur : gris si off, bleu si on */}
                                             <div className="w-12 h-7 bg-slate-300 rounded-full peer peer-checked:bg-primary transition-colors duration-200"></div>

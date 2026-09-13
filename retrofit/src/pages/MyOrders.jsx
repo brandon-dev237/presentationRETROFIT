@@ -73,7 +73,7 @@ const MyOrders = () => {
                     <div className='flex items-center gap-3'>
                       {/* Image du produit commandé */}
                       <div className='bg-primary/10 p-2 rounded-lg w-16 h-16 flex items-center justify-center shrink-0'>
-                        <img src={item.product.image[0]} alt="" className='w-12 h-12 object-contain' />
+                        <img src={item.product.image[0]} alt={item.product.name} className='w-12 h-12 object-contain' />
                       </div>
                       {/* Nom et catégorie du produit */}
                       <div>

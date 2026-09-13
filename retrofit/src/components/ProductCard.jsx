@@ -78,6 +78,7 @@ const ProductCard = ({ product }) => {
                             <button
                                 className="flex items-center justify-center gap-1 bg-primary border border-primary w-[48px] sm:w-[60px] md:w-[80px] h-[26px] sm:h-[30px] md:h-[34px] rounded text-white text-[0.6rem] sm:text-xs md:text-sm"
                                 onClick={() => addToCart(product._id)}
+                                aria-label={`Ajouter ${product.name} au panier`}
                             >
                                 <img src={assets.nav_cart_icon} alt="cart" className="w-2.5 sm:w-3 md:w-4" />
                                 <span className="hidden sm:inline">ajouter</span>
@@ -87,11 +88,11 @@ const ProductCard = ({ product }) => {
                             // Si l'article EST dans le panier → afficher la quantité avec +/-
                             <div className="flex items-center justify-center gap-1 w-[48px] sm:w-[60px] md:w-20 h-[26px] sm:h-[30px] md:h-[34px] bg-primary/25 rounded select-none text-[0.65rem] sm:text-sm">
                                 {/* Bouton - : retire un article du panier */}
-                                <button onClick={() => removeFromCart(product._id)} className="px-1 md:px-2 font-bold">-</button>
+                                <button onClick={() => removeFromCart(product._id)} aria-label={`Retirer un exemplaire de ${product.name} du panier`} className="px-1 md:px-2 font-bold">-</button>
                                 {/* Quantité actuelle dans le panier */}
-                                <span className="w-3 sm:w-4 text-center">{cartItems[product._id]}</span>
+                                <span className="w-3 sm:w-4 text-center" aria-label={`Quantité : ${cartItems[product._id]}`}>{cartItems[product._id]}</span>
                                 {/* Bouton + : ajoute un article au panier */}
-                                <button onClick={() => addToCart(product._id)} className="px-1 md:px-2 font-bold">+</button>
+                                <button onClick={() => addToCart(product._id)} aria-label={`Ajouter un exemplaire de ${product.name} au panier`} className="px-1 md:px-2 font-bold">+</button>
                             </div>
                         )}
                     </div>

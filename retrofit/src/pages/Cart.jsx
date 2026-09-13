@@ -52,7 +52,6 @@ const Cart = () => {
     const fetchAddresses = async () => {
         try {
             const { data } = await axios.get('/api/address/get');
-            console.log('[fetchAddresses] réponse API:', data);
             if (data.success) {
                 if (data.addresses.length > 0) {
                     setAddresses(data.addresses);
@@ -62,7 +61,6 @@ const Cart = () => {
                 toast.error(data.message || 'Impossible de charger les adresses');
             }
         } catch (error) {
-            console.error('[fetchAddresses] erreur:', error);
             toast.error(error.message);
         }
     };
@@ -123,7 +121,6 @@ const Cart = () => {
 
     // On charge les adresses seulement si l'utilisateur est connecté
     useEffect(() => {
-        console.log('[Cart] user:', user);
         if (user) fetchAddresses();
     }, [user])
 
@@ -167,7 +164,7 @@ const Cart = () => {
                                     <div className='flex items-center gap-2'>
                                         <p>Qte:</p>
                                         {/* Sélecteur de quantité — la liste va jusqu'à 9 ou la quantité actuelle */}
-                                        <select onChange={(e) => updateCartItem(product._id, Number(e.target.value))} value={product.quantity} className='outline-none border border-gray-300 rounded px-1'>
+                                        <select onChange={(e) => updateCartItem(product._id, Number(e.target.value))} value={product.quantity} aria-label={`Quantité pour ${product.name}`} className='outline-none border border-gray-300 rounded px-1'>
                                             {Array(Math.max(product.quantity, 9)).fill('').map((_, i) => (
                                                 <option key={i} value={i + 1}>{i + 1}</option>
                                             ))}
@@ -179,7 +176,7 @@ const Cart = () => {
                         {/* Sous-total de cet article (prix × quantité) */}
                         <p className="text-center">{currency}{product.offerPrice * product.quantity}</p>
                         {/* Bouton poubelle pour supprimer l'article du panier */}
-                        <button onClick={() => deleteFromCart(product._id)} className="cursor-pointer mx-auto text-gray-400 hover:text-red-500 transition">
+                        <button onClick={() => deleteFromCart(product._id)} aria-label={`Supprimer ${product.name} du panier`} className="cursor-pointer mx-auto text-gray-400 hover:text-red-500 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0a1 1 0 00-1-1h-4a1 1 0 00-1 1H5a1 1 0 000 2h14a1 1 0 000-2h-4z" />
                             </svg>

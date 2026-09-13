@@ -3,10 +3,35 @@
 // Ce composant affiche un formulaire d'abonnement en bas de
 // la page d'accueil. Les visiteurs entrent leur email pour
 // recevoir les nouveautés et offres de la boutique.
-// TODO: connecter la soumission du formulaire à un service d'emailing.
 // ============================================================
 
+import { useState } from 'react'
+import { useAppContext } from '../context/AppContext'
+import toast from 'react-hot-toast'
+
 const NewsLetter = () => {
+    const { axios } = useAppContext()
+    const [email, setEmail] = useState('')
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
+    const onSubmitHandler = async (e) => {
+        e.preventDefault()
+        setIsSubmitting(true)
+        try {
+            const { data } = await axios.post('/api/newsletter/subscribe', { email })
+            if (data.success) {
+                toast.success(data.message)
+                setEmail('')
+            } else {
+                toast.error(data.message)
+            }
+        } catch (error) {
+            toast.error(error.message)
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
+
     return (
         <div className="flex flex-col items-center justify-center text-center space-y-3 mt-12 sm:mt-16 md:mt-24 pb-14 px-4">
             {/* Titre accrocheur */}
@@ -18,20 +43,23 @@ const NewsLetter = () => {
                 Abonnez-vous pour ne rien manquer : offres, nouveautés et promotions exclusives.
             </p>
             {/* Formulaire email + bouton sur la même ligne */}
-            <form className="flex items-center justify-between max-w-2xl w-full h-11 sm:h-12 md:h-13">
+            <form onSubmit={onSubmitHandler} className="flex items-center justify-between max-w-2xl w-full h-11 sm:h-12 md:h-13">
                 {/* Champ email — le bord droit est supprimé pour fusionner visuellement avec le bouton */}
                 <input
                     className="border border-gray-300 rounded-md h-full border-r-0 outline-none w-full rounded-r-none px-3 text-sm sm:text-base text-gray-500"
                     type="email"
                     placeholder="Entrez votre e-mail"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                 />
                 {/* Bouton de soumission — collé au champ email grâce à rounded-l-none */}
                 <button
                     type="submit"
-                    className="px-4 sm:px-8 md:px-12 h-full text-sm sm:text-base text-white bg-primary hover:bg-primary-dull transition-all cursor-pointer rounded-md rounded-l-none whitespace-nowrap"
+                    disabled={isSubmitting}
+                    className="px-4 sm:px-8 md:px-12 h-full text-sm sm:text-base text-white bg-primary hover:bg-primary-dull transition-all cursor-pointer rounded-md rounded-l-none whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                    S'inscrire
+                    {isSubmitting ? '...' : "S'inscrire"}
                 </button>
             </form>
         </div>

@@ -9,10 +9,11 @@ import { useAppContext } from '../context/AppContext'
 import { useParams } from 'react-router-dom' // Pour lire l'URL
 import { categories } from '../assets/assets' // Liste de toutes les catégories
 import ProductCard from '../components/ProductCard'
+import ProductCardSkeleton from '../components/ProductCardSkeleton' // Placeholder pendant le chargement
 
 const ProductCategory = () => {
     // On récupère la liste de tous les produits
-    const { products } = useAppContext()
+    const { products, isProductsLoading } = useAppContext()
 
     // useParams lit la partie variable de l'URL
     // Si l'URL est /products/doudoune, alors category = "doudoune"
@@ -45,8 +46,12 @@ const ProductCategory = () => {
                 </div>
             )}
 
-            {/* Si des produits ont été trouvés, on les affiche en grille */}
-            {filteredProducts.length > 0 ?(
+            {/* Pendant le chargement : squelettes animés plutôt qu'un message "aucun produit" trompeur */}
+            {isProductsLoading ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
+                {Array(6).fill(0).map((_, i) => <ProductCardSkeleton key={i} />)}
+            </div>
+            ) : filteredProducts.length > 0 ?(
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
                 {filteredProducts.map((product, index) => (

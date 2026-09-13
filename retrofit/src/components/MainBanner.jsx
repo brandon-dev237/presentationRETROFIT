@@ -23,7 +23,7 @@ const MainBanner = () => {
         {/* Texte et boutons superposés sur l'image — positionnés avec absolute */}
         <div className='absolute inset-0 flex flex-col items-start justify-center px-4 md:pl-18 lg:pl-16'>
           {/* Slogan de la boutique */}
-          <h1 className="text-[clamp(1rem,4.5vw,2rem)] font-bold text-left max-w-[65%] md:max-w-80 lg:max-w-105 leading-tight">
+          <h1 className="text-[clamp(0.8rem,3.8vw,2rem)] font-bold text-left max-w-[65%] md:max-w-80 lg:max-w-105 leading-tight">
             {"L'élégance d'hier. L'énergie d'aujourd'hui."}
           </h1>
 

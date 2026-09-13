@@ -1,0 +1,40 @@
+# Environnement de PRODUCTION RetroFit : images buildées (pas de hot-reload,
+# pas de volumes montés) — contrairement à docker-compose.yml (dev).
+#
+# Avant de lancer :
+# 1. Remplir server/.env (voir server/.env.example)
+# 2. Définir VITE_BACKEND_URL et VITE_CURRENCY dans un fichier ".env" à la
+#    racine du projet (à côté de ce fichier) — docker compose les lit
+#    automatiquement et les transmet au build du frontend en tant que
+#    build-args (obligatoire : Vite les intègre au moment du build, pas
+#    au démarrage du conteneur).
+#      VITE_BACKEND_URL=https://api.mondomaine.com
+#      VITE_CURRENCY=$
+#
+# Démarrer : docker compose -f docker-compose.prod.yml up --build -d
+
+services:
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    env_file:
+      - ./server/.env
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "4000:4000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./retrofit
+      dockerfile: Dockerfile.prod
+      args:
+        VITE_BACKEND_URL: ${VITE_BACKEND_URL}
+        VITE_CURRENCY: ${VITE_CURRENCY}
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped

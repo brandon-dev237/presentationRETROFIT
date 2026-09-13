@@ -13,6 +13,14 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
+
+# Reçues via "docker compose build --build-arg" (voir docker-compose.prod.yml) :
+# vite build lit ces variables depuis process.env au moment de la compilation.
+ARG VITE_BACKEND_URL
+ARG VITE_CURRENCY
+ENV VITE_BACKEND_URL=$VITE_BACKEND_URL
+ENV VITE_CURRENCY=$VITE_CURRENCY
+
 RUN npm run build
 
 # --- Étape 2 : serveur statique ---

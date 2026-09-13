@@ -56,6 +56,10 @@ app.use(cors({
     credentials: true
 }));
 
+// Permet de lire les cookies envoyés par le navigateur (ex: le cookie "token"
+// utilisé par authUser.js pour vérifier qu'on est connecté)
+app.use(cookieParser());
+
 // Le webhook Stripe doit recevoir le body brut AVANT express.json()
 // On exclut donc cette route précise du parsing JSON global : express.raw()
 // (déclaré dans orderRoute.js) doit être le premier middleware à lire le body.

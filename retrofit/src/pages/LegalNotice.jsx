@@ -17,10 +17,7 @@ const LegalNotice = () => {
             <section className='mb-8'>
                 <h2 className='text-lg font-medium text-gray-800 mb-2'>Éditeur du site</h2>
                 <p>
-                    Le site RetroFit est un <strong>projet de démonstration</strong> réalisé dans un cadre
-                    étudiant/personnel. Il ne constitue pas une activité commerciale réelle et n'est édité
-                    par aucune société immatriculée : aucun numéro SIRET, RCS ou de TVA intracommunautaire
-                    ne s'applique.
+                    Le site est édité par <strong>RetroFit</strong>.
                 </p>
             </section>
 

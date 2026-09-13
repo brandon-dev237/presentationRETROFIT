@@ -46,16 +46,15 @@ await connectCloudinary()
 
 // Liste des adresses web autorisées à parler avec notre serveur
 // (pour l'instant, seulement notre site en développement)
-const allowedOrigins = ['http://localhost:5173']
+const allowedOrigins = [
+    'http://localhost:5173',
+    process.env.FRONTEND_URL
+].filter(Boolean);
 
-//configuration du middleware
-
-// Permet de lire les cookies envoyés par le navigateur
-app.use(cookieParser());
-
-// Permet au site web (sur un autre port) de communiquer avec le serveur
-// credentials:true = on autorise l'envoi des cookies
-app.use(cors({origin: allowedOrigins, credentials:true }));
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true
+}));
 
 // Le webhook Stripe doit recevoir le body brut AVANT express.json()
 // On exclut donc cette route précise du parsing JSON global : express.raw()
@@ -94,6 +93,6 @@ app.use('/api/order', orderRouter)
 
 // On démarre le serveur et on l'écoute sur le port choisi
 // Quand c'est prêt, on affiche un message dans la console
-app.listen(port, ()=>{
- console.log(`le server est demarrer sur http://localhost:${port}`)
-})
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Server running on port ${port}`);
+});

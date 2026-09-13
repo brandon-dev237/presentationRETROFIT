@@ -16,21 +16,17 @@ dns.setServers(["8.8.8.8", "1.1.1.1"])
 
 // Cette fonction essaie de se connecter à la base de données
 // "async" veut dire qu'on attend que la connexion soit faite avant de continuer
-const connectDB = async () =>{
-   try {
-     // Quand la connexion réussit, on affiche un message pour le dire
-     mongoose.connection.on('connected',()=> console.log("connecter a la base de donnees ")
-    );
+const connectDB = async () => {
+    try {
+        mongoose.connection.on('connected', () =>
+            console.log('Connecté à la base de données')
+        );
 
-    // On se connecte à MongoDB en utilisant l'adresse secrète stockée dans .env
-    // "/retrofit" c'est le nom de notre base de données
-    await mongoose.connect(`${process.env.MONGODB_URI}/retrofit`)
-   } catch (error) {
-      // Si quelque chose ne va pas, on affiche l'erreur dans la console
-      console.error (error.message);
-   }
+        await mongoose.connect(`${process.env.MONGODB_URI}/retrofit`);
+    } catch (error) {
+        console.error('Erreur MongoDB :', error.message);
+        process.exit(1);
+    }
+};
 
-}
-
-// On exporte cette fonction pour pouvoir l'utiliser dans server.js
 export default connectDB;

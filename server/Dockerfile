@@ -1,16 +1,18 @@
-# Image de développement pour le backend Express.
-# Le code source est monté en volume par docker-compose (voir docker-compose.yml),
-# donc cette image installe seulement les dépendances ; nodemon recharge le serveur
-# automatiquement quand un fichier change, comme en local.
+# Image de production pour le backend Express
 FROM node:24-alpine
 
+# Dossier de travail
 WORKDIR /app
 
+# Installation des dépendances
 COPY package*.json ./
-RUN npm install
+RUN npm install --omit=dev
 
+# Copie du code du serveur
 COPY . .
 
+# Port utilisé par Express
 EXPOSE 4000
 
-CMD ["npm", "run", "server"]
+# Démarrage en production
+CMD ["npm", "start"]

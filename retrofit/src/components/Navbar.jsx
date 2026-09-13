@@ -25,9 +25,7 @@ const Navbar = () => {
          try {
             const{data} = await axios.post ('/api/user/logout')
             if(data.success){
-                toast.success(data.message)          
-                  setUser(null);   // On supprime l'utilisateur du contexte
-                  navigate('/')    // On redirige vers la page d'accueil
+                toast.success(data.message)
             }else{
                 toast.error(data.message)
             }
@@ -35,7 +33,7 @@ const Navbar = () => {
             toast.error(error.message)
          }
 
-
+        // On déconnecte localement dans tous les cas, même si l'appel serveur échoue
         setUser(null);   // On supprime l'utilisateur du contexte
         navigate('/')    // On redirige vers la page d'accueil
      }
@@ -63,11 +61,13 @@ const Navbar = () => {
                 <NavLink to='/'>Accueil</NavLink>
                 <NavLink to='/products'>Nos Articles </NavLink>
                 <NavLink to='/'>Contact</NavLink>
+                {/* Lien vers l'espace vendeur (page de connexion ou dashboard selon l'état) */}
+                <NavLink to='/seller'>Espace vendeur</NavLink>
 
                 {/* Barre de recherche — visible seulement sur les très grands écrans */}
                 <div className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
                     {/* onChange met à jour searchQuery dans le contexte à chaque frappe */}
-                    <input onChange={(e)=>setSearchQuery(e.target.value)} className="py-1.5 w-full bg-transparent outline-none placeholder-gray-500" type="text" placeholder="Search products" />
+                    <input onChange={(e)=>setSearchQuery(e.target.value)} className="py-1.5 w-full bg-transparent outline-none placeholder-gray-500" type="text" placeholder="rechercher des produits" />
                    <img src={assets.seahrc} alt='search' className='w-4 h-4' />
                 </div>
 
@@ -123,6 +123,8 @@ const Navbar = () => {
                 <NavLink to="/my-orders" onClick={()=> setOpen(false)} >Mes Commandes </NavLink>
                   }
                 <NavLink to="/products" onClick={()=> setOpen(false)} >Contacter </NavLink>
+                {/* Lien vers l'espace vendeur, aussi disponible dans le menu mobile */}
+                <NavLink to="/seller" onClick={()=> setOpen(false)} >Espace vendeur</NavLink>
 
                 {/* Bouton connexion ou déconnexion selon l'état */}
                 {!user ? (

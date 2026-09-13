@@ -22,10 +22,12 @@ const ProductCard = ({ product }) => {
         // La carte entière est cliquable → redirige vers la page détail du produit
         <div
             className="border border-gray-500/20 rounded-md px-2 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-3 bg-white w-full cursor-pointer hover:shadow-md transition"
-            onClick={() => { 
-                const category = Array.isArray(product.category) ? product.category[0] : product.category;
-                navigate(`/products/${category.toLowerCase()}/${product._id}`); 
-                scrollTo(0, 0) 
+            onClick={() => {
+                // Certains produits n'ont pas de catégorie en base : on utilise "divers"
+                // comme segment d'URL de secours pour ne pas planter la navigation.
+                const category = (Array.isArray(product.category) ? product.category[0] : product.category) || 'divers';
+                navigate(`/products/${category.toLowerCase()}/${product._id}`);
+                scrollTo(0, 0)
             }}
         >
             {/* Image du produit */}

@@ -62,9 +62,11 @@ const ProductDetails = () => {
                 <span className="cursor-pointer hover:underline" onClick={() => navigate("/")}>Accueil</span> /
                 <span className="cursor-pointer hover:underline" onClick={() => navigate("/products")}> Produits</span> /
                 <span className="cursor-pointer hover:underline" onClick={() => {
-                    const category = Array.isArray(product.category) ? product.category[0] : product.category;
+                    // Certains produits n'ont pas de catégorie en base : on utilise "divers"
+                    // comme segment d'URL de secours pour ne pas planter la navigation.
+                    const category = (Array.isArray(product.category) ? product.category[0] : product.category) || 'divers';
                     navigate(`/products/${category.toLowerCase()}`);
-                }}> {Array.isArray(product.category) ? product.category[0] : product.category}</span> /
+                }}> {(Array.isArray(product.category) ? product.category[0] : product.category) || 'Divers'}</span> /
                 <span className="text-primary"> {product.name}</span>
             </p>
 
@@ -117,6 +119,14 @@ const ProductDetails = () => {
                         <p className="text-2xl font-medium">Prix : {currency}{product.offerPrice}</p>
                         <span className="text-gray-500/70">(toutes taxes comprises)</span>
                     </div>
+
+                    {/* Description du produit */}
+                    {product.description && (
+                        <div className="mt-6">
+                            <p className="text-base font-medium text-gray-800">Description</p>
+                            <p className="text-gray-500/80 mt-1 leading-relaxed">{product.description}</p>
+                        </div>
+                    )}
 
                     {/* Boutons Ajouter au panier / Commander */}
                     <div className="flex items-center mt-10 gap-4 text-base">

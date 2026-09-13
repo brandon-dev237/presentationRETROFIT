@@ -7,13 +7,23 @@
 
 import React, { useState } from 'react'
 import { useAppContext } from '../../context/AppContext'
-import axios from 'axios'
 import toast from 'react-hot-toast'
+
+// Un vrai _id MongoDB fait toujours 24 caractères hexadécimaux.
+// Les produits de démonstration (assets.js) utilisent des id factices ("1", "2"...)
+// affichés uniquement si le chargement des vrais produits a échoué : on ne veut
+// jamais laisser le vendeur essayer de modifier le stock de ces faux produits,
+// le serveur refuserait avec "Identifiant de produit invalide".
+const isRealProductId = (id) => /^[0-9a-fA-F]{24}$/.test(id)
 
 const ProductList = () => {
 
     // On récupère la liste des produits et le symbole monétaire depuis le contexte
-    const { products, currency , axios, fetchProducts} = useAppContext()
+    const { products, currency, axios, fetchProducts } = useAppContext()
+
+    // On ne garde que les produits ayant un vrai identifiant MongoDB
+    const realProducts = products.filter((product) => isRealProductId(product._id))
+    const showFallbackWarning = realProducts.length < products.length
 
     // stockOverrides = modifications temporaires du stock non encore sauvegardées
     // C'est un objet { productId: true/false } pour les changements locaux
@@ -30,8 +40,7 @@ const ProductList = () => {
             toast.error(data.message)
         }
      } catch (error) {
-        toast.error(data.message)
-        
+        toast.error(error.message)
      }
         
     }
@@ -47,6 +56,21 @@ const ProductList = () => {
             <div className="w-full md:p-10 p-4">
                 {/* Titre de la page */}
                 <h2 className="pb-4 text-lg font-medium">Tous les produits </h2>
+
+                {/* Avertissement si la vraie liste de produits n'a pas pu être chargée */}
+                {showFallbackWarning && (
+                    <div className="mb-4 flex items-center gap-3 rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                        <span>
+                            Impossible de charger tous les produits depuis le serveur — certains ne sont pas affichés.
+                        </span>
+                        <button
+                            onClick={() => fetchProducts()}
+                            className="shrink-0 rounded border border-amber-400 px-3 py-1 font-medium hover:bg-amber-100"
+                        >
+                            Réessayer
+                        </button>
+                    </div>
+                )}
 
                 {/* Tableau des produits */}
                 <div className="flex flex-col items-center max-w-4xl w-full overflow-hidden rounded-md bg-white border border-gray-500/20">
@@ -64,7 +88,7 @@ const ProductList = () => {
 
                         {/* Corps du tableau — une ligne par produit */}
                         <tbody className="text-sm text-gray-500">
-                            {products.map((product) => (
+                            {realProducts.map((product) => (
                                 <tr key={product._id} className="border-t border-gray-500/20">
 
                                     {/* Colonne 1 : Image + Nom du produit */}

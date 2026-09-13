@@ -7,7 +7,10 @@ import User from "../models/User.js"
 export const updateCart = async (req, res )=>{
 
     try {
-        const{userId, cartItems } = req.body
+        // userId vient du middleware authUser (jeton vérifié), jamais du body :
+        // sinon n'importe quel utilisateur connecté pourrait écraser le panier d'un autre.
+        const { cartItems } = req.body
+        const userId = req.userId
         await User.findByIdAndUpdate(userId, {cartItems})
         res. json({success:true, message:'Cart Updated' })
     } catch (error) {

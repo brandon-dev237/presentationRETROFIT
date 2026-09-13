@@ -6,6 +6,7 @@
 // Les liens sont définis dans le tableau "footerLinks" dans assets.js.
 // ============================================================
 
+import { Link } from "react-router-dom";
 import assets, { footerLinks } from "../assets/assets"; // Logo et liens du footer
 
 const Footer = () => {
@@ -48,10 +49,19 @@ const Footer = () => {
 
       </div>
 
-      {/* Barre de copyright en bas */}
-      <p className="py-3 md:py-4 text-center text-xs sm:text-sm md:text-base text-gray-500/80">
-        Copyright © 2026 RetroFit — Mode vintage durable
-      </p>
+      {/* Barre du bas : liens légaux + copyright */}
+      <div className="py-3 md:py-4 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-6 text-center text-xs sm:text-sm md:text-base text-gray-500/80">
+        <p>Copyright © 2026 RetroFit — Mode vintage durable</p>
+        <div className="flex items-center gap-3">
+          <Link to="/mentions-legales" className="hover:underline transition duration-200">
+            Mentions légales
+          </Link>
+          <span aria-hidden="true">·</span>
+          <Link to="/confidentialite" className="hover:underline transition duration-200">
+            Politique de confidentialité
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };

@@ -25,7 +25,9 @@ const userSchema = new mongoose.Schema({
     // Le panier de l'utilisateur stocké en base de données
     // C'est un objet (Object) qui contient les produits et leurs quantités
     // Par défaut, le panier est vide {}
-    CartItems: {type: Object, default: {}},  // ✅ Object avec majuscule
+    // Le nom doit correspondre exactement à celui utilisé par updateCart (cartController.js),
+    // sinon Mongoose (en mode strict) ignore silencieusement la mise à jour.
+    cartItems: {type: Object, default: {}},
 
 // minimize: false est important pour que MongoDB sauvegarde même les objets vides {}
 // Sans ça, un panier vide pourrait ne pas être sauvegardé

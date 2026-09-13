@@ -27,10 +27,11 @@ const ProductCategory = () => {
     // On filtre les produits pour ne garder que ceux de la bonne catégorie
     const filteredProducts = products.filter(
         (product) => {
-            // product.category peut être un array ou une string
-            // On le traite comme un array pour être sûr
+            // product.category peut être un array, une string, ou absent (produit
+            // sans catégorie en base) — on filtre les valeurs vides pour éviter
+            // un crash sur cat.toLowerCase() quand cat est undefined.
             const categories = Array.isArray(product.category) ? product.category : [product.category];
-            return categories.some(cat => cat.toLowerCase() === category?.toLowerCase());
+            return categories.some(cat => cat && cat.toLowerCase() === category?.toLowerCase());
         }
     )
 

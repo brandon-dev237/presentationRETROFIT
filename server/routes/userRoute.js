@@ -13,16 +13,22 @@ import { isAuth, login, register,logout } from '../controllers/userController.js
 // On importe le middleware qui vérifie l'identité de l'utilisateur
 import authUser from '../middlewares/authUser.js';
 
+// On importe le limiteur de débit pour bloquer les tentatives de brute-force
+import createRateLimiter from '../middlewares/rateLimiter.js';
+
 // On crée un routeur dédié aux routes utilisateur
 const userRouter = express.Router();
 
+// Limite : 10 tentatives par IP toutes les 15 minutes sur register/login
+const authLimiter = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 10 });
+
 // POST /api/user/register — Créer un nouveau compte
 // Pas besoin d'être connecté pour créer un compte
-userRouter.post('/register',register)
+userRouter.post('/register',authLimiter,register)
 
 // POST /api/user/login — Se connecter à son compte
 // Pas besoin d'être connecté pour se connecter !
-userRouter.post('/login',login)
+userRouter.post('/login',authLimiter,login)
 
 // GET /api/user/is-auth — Vérifier si l'utilisateur est connecté
 // authUser vérifie le cookie d'abord, puis isAuth renvoie les infos utilisateur

@@ -60,7 +60,7 @@ const MyOrders = () => {
               {/* On affiche chaque article dans la commande */}
               {order.items.map((item, itemIndex) => (
 
-                <div key={itemIndex} className={`grid grid-cols-3 items-center gap-6 p-4 ${itemIndex !== 0 ? 'border-t border-gray-200' : ''}`}>
+                <div key={itemIndex} className={`grid grid-cols-1 sm:grid-cols-3 items-start sm:items-center gap-3 sm:gap-6 p-4 ${itemIndex !== 0 ? 'border-t border-gray-200' : ''}`}>
 
                   {/* Colonne 1 : Numéro de commande + Image + Nom + Catégorie */}
                   <div className='flex flex-col gap-2'>
@@ -99,7 +99,7 @@ const MyOrders = () => {
                   </div>
 
                   {/* Colonne 3 : Total de la commande */}
-                  <div className='flex flex-col items-end gap-1'>
+                  <div className='flex flex-col items-start sm:items-end gap-1'>
                     {/* Le total global s'affiche seulement pour le premier article */}
                     {itemIndex === 0 && (
                       <p className='text-xs text-gray-400 font-medium'>

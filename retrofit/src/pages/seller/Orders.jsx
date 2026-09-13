@@ -7,20 +7,29 @@
 
 import React, { useEffect, useState } from 'react'
 import { useAppContext } from '../../context/AppContext'
-import assets, { dummyOrders } from '../../assets/assets' // Icône et commandes de démonstration
+import toast from 'react-hot-toast'
+import assets from '../../assets/assets' // Icône de commande
 
 const Orders = () => {
-     // On récupère le symbole monétaire depuis le contexte
-     const {currency} = useAppContext()
+     // On récupère le symbole monétaire et axios depuis le contexte
+     const {currency, axios} = useAppContext()
 
      // Liste des commandes à afficher
      const [orders, setOrders] = useState([])
 
-    // Cette fonction charge les commandes
-    // Pour l'instant elle utilise les commandes de démonstration (dummyOrders)
-    // À terme, elle devrait appeler le serveur : axios.get('/api/order/seller')
+    // Cette fonction charge les vraies commandes depuis le serveur
+    // (COD ou payées en ligne — voir getAllOrders côté backend)
     const  fetchOrders= async () =>{
-           setOrders (dummyOrders) // On utilise les données de démonstration
+        try {
+            const {data} = await axios.get('/api/order/seller')
+            if(data.success){
+                setOrders(data.orders)
+            }else{
+                toast.error(data.message)
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
     };
 
     // On charge les commandes au chargement de la page

@@ -151,7 +151,9 @@ const Cart = () => {
                         <div className="flex items-center md:gap-6 gap-3">
                             {/* Image cliquable → redirige vers la page détail du produit */}
                             <div onClick={() => {
-                                const category = Array.isArray(product.category) ? product.category[0] : product.category;
+                                // Certains produits n'ont pas de catégorie en base : on utilise "divers"
+                                // comme segment d'URL de secours pour ne pas planter la navigation.
+                                const category = (Array.isArray(product.category) ? product.category[0] : product.category) || 'divers';
                                 navigate(`/products/${category.toLowerCase()}/${product._id}`);
                                 scrollTo(0, 0)
                             }} className="cursor-pointer w-24 h-24 flex items-center justify-center border border-gray-300 rounded overflow-hidden">

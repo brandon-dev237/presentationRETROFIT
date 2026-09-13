@@ -45,8 +45,8 @@ export const placeOrderCOD = async (req, res)=>{
 
         }, 0)
 
-        // On ajoute la taxe de 2% au montant total
-        amount += Math.floor(amount*0.02);
+        // On ajoute la taxe de 2% au montant total (arrondie au centime, comme côté frontend)
+        amount += Math.floor(amount * 0.02 * 100) / 100;
 
         // On crée la commande dans la base de données
         await order.create({
@@ -108,8 +108,8 @@ export const placeOrderStripe = async (req, res) => {
             return (await acc) + prod.offerPrice * item.quantity;
         }, 0);
 
-        // On ajoute la taxe de 2%
-        amount += Math.floor(amount * 0.02);
+        // On ajoute la taxe de 2% (arrondie au centime, comme côté frontend)
+        amount += Math.floor(amount * 0.02 * 100) / 100;
 
         // On crée la commande dans la base de données (non payée pour l'instant)
         const newOrder = await order.create({

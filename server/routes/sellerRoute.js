@@ -13,12 +13,18 @@ import { isSellerAuth, sellerLogin, sellerLogout } from '../controllers/sellerCo
 // On importe le middleware de vérification vendeur
 import authSeller from '../middlewares/authSeller.js';
 
+// On importe le limiteur de débit pour bloquer les tentatives de brute-force
+import createRateLimiter from '../middlewares/rateLimiter.js';
+
 // On crée un routeur dédié aux routes vendeur
 const sellerRouter = express.Router();
 
+// Limite : 10 tentatives par IP toutes les 15 minutes sur le login vendeur
+const sellerLoginLimiter = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 10 });
+
 // POST /api/seller/login — Connexion du vendeur
 // Pas besoin d'être déjà connecté pour se connecter !
-sellerRouter.post('/login',sellerLogin);
+sellerRouter.post('/login',sellerLoginLimiter,sellerLogin);
 
 // GET /api/seller/is-auth — Vérifier si le vendeur est connecté
 // authSeller vérifie d'abord le cookie, puis isSellerAuth confirme

@@ -15,6 +15,18 @@ import axios from "axios";                         // Pour faire des requêtes a
 // Sans ça, le serveur ne reconnaîtrait pas l'utilisateur connecté
 axios.defaults.withCredentials = true;
 
+// En développement, le proxy Vite redirige "/api" vers le serveur local (voir vite.config.js) :
+// les requêtes restent "same-origin" pour le navigateur, donc pas de CORS à gérer.
+// On ne touche pas à ce comportement ici, sinon toute requête passerait en cross-origin direct
+// vers le backend et casserait dès que l'origine du navigateur ne correspond pas exactement
+// à celle autorisée par le CORS du serveur (ex: 127.0.0.1 au lieu de localhost).
+//
+// En production, ce proxy n'existe plus : il faut donc cibler explicitement le backend
+// déployé via VITE_BACKEND_URL, sinon les requêtes partiraient vers le frontend lui-même.
+if (import.meta.env.PROD && import.meta.env.VITE_BACKEND_URL) {
+  axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
+}
+
 // On crée le "contexte" — c'est la boîte partagée
 export const AppContext = createContext();
 
@@ -31,8 +43,19 @@ export const AppContextProvider = ({ children }) => {
   // État de l'utilisateur connecté (null = personne connecté)
   const [user, setUser] = useState(null);
 
+  // Est-ce que la vérification initiale de connexion (fetchUser) est encore en cours ?
+  // Tant que c'est true, on ne sait pas encore si l'utilisateur est connecté ou non —
+  // les routes protégées doivent attendre avant de rediriger, sinon elles redirigent
+  // à tort vers l'accueil sur un rechargement de page (avant que fetchUser ait répondu).
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
+
   // Est-ce que la personne connectée est le vendeur ? (true/false)
   const [isSeller, setIsSeller] = useState(false);
+
+  // Même logique que isAuthLoading, mais pour la vérification de connexion vendeur
+  // (évite d'afficher brièvement le formulaire de connexion vendeur avant le dashboard
+  // au rechargement de /seller, le temps que fetchSeller réponde).
+  const [isSellerLoading, setIsSellerLoading] = useState(true);
 
   // Doit-on afficher le popup de connexion utilisateur ?
   const [showUserLogin, setShowUserLogin] = useState(false);
@@ -64,6 +87,9 @@ export const AppContextProvider = ({ children }) => {
     } catch {
       // Si ça échoue (pas connecté, serveur indisponible), on reste déconnecté
       setUser(null);
+    } finally {
+      // Que ça réussisse ou échoue, la vérification est terminée
+      setIsAuthLoading(false);
     }
   }
 
@@ -82,6 +108,9 @@ export const AppContextProvider = ({ children }) => {
     } catch (error) {
        // Si ça échoue, on n'est pas vendeur
        setIsSeller(false)
+    } finally {
+       // Que ça réussisse ou échoue, la vérification est terminée
+       setIsSellerLoading(false)
     }
   }
 
@@ -197,8 +226,10 @@ export const AppContextProvider = ({ children }) => {
     navigate,        // Fonction pour changer de page
     user,            // Infos de l'utilisateur connecté
     setUser,         // Modifier l'utilisateur (connexion/déconnexion)
+    isAuthLoading,   // true tant qu'on ne sait pas encore si l'utilisateur est connecté
     isSeller,        // Est-ce que c'est le vendeur ?
     setIsSeller,     // Modifier le statut vendeur
+    isSellerLoading, // true tant qu'on ne sait pas encore si c'est le vendeur
     showUserLogin,   // Afficher/cacher le popup de connexion
     setShowUserLogin,
     products,        // Liste de tous les produits

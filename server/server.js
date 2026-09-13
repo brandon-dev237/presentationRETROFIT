@@ -58,9 +58,17 @@ app.use(cookieParser());
 app.use(cors({origin: allowedOrigins, credentials:true }));
 
 // Le webhook Stripe doit recevoir le body brut AVANT express.json()
+// On exclut donc cette route précise du parsing JSON global : express.raw()
+// (déclaré dans orderRoute.js) doit être le premier middleware à lire le body.
 
 // Permet de lire les données envoyées en format JSON dans les requêtes
-app.use(express.json());
+// (sauf pour le webhook Stripe, qui a besoin du corps brut non parsé)
+app.use((req, res, next) => {
+    if (req.originalUrl === '/api/order/stripe/webhook') {
+        return next();
+    }
+    express.json()(req, res, next);
+});
 
 // Route de test — si on va sur "/", le serveur répond juste "API est en Marche"
 app.get('/',(req,res) => res.send("API est en Marche"));

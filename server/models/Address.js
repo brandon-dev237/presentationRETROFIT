@@ -12,34 +12,34 @@ import mongoose from "mongoose";
 const addressSchema = new mongoose.Schema({
 
     // L'identifiant de l'utilisateur à qui appartient cette adresse
-    userId :{type:String, require: true},
+    userId :{type:String, required: true},
 
     // Le prénom de la personne à livrer
-    firstName :{type:String, require: true},
+    firstName :{type:String, required: true},
 
     // Le nom de famille de la personne à livrer
-    lastName :{type:String, require: true},
+    lastName :{type:String, required: true},
 
     // L'adresse email de contact pour la livraison
-    email :{type:String, require: true},
+    email :{type:String, required: true},
 
     // La rue et le numéro (ex: "12 Rue de la Paix")
-    street :{type:String, require: true},
+    street :{type:String, required: true},
 
     // La ville (ex: "Paris")
-    city :{type:String, require: true},
+    city :{type:String, required: true},
 
     // La région ou département (ex: "Île-de-France")
-    state :{type:String, require: true},
+    state :{type:String, required: true},
 
     // Le code postal (ex: 75001) — c'est un nombre
-    zipcode :{type:Number, require: true},
+    zipcode :{type:Number, required: true},
 
     // Le pays (ex: "France")
-    country :{type:String, require: true},
+    country :{type:String, required: true},
 
     // Le numéro de téléphone pour contacter lors de la livraison
-    phone :{type:String, require: true},
+    phone :{type:String, required: true},
 
 })
 

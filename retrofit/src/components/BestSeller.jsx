@@ -14,7 +14,7 @@ const BestSeller = () => {
   const { products } = useAppContext();
 
   return (
-    <div id="tendances-du-moment" className="mt-16">
+    <div id="tendances-du-moment" className="mt-16 scroll-mt-24">
 
       {/* Titre de la section */}
       <p className="text-2xl md:text-3xl font-medium">

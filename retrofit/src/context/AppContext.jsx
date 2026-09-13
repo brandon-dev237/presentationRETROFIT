@@ -7,7 +7,6 @@
 
 import { useEffect, useState, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { dummyProducts } from "../assets/assets"; // Produits de démonstration
 import toast from "react-hot-toast";              // Pour afficher des notifications
 import axios from "axios";                         // Pour faire des requêtes au serveur
 
@@ -60,8 +59,11 @@ export const AppContextProvider = ({ children }) => {
   // Doit-on afficher le popup de connexion utilisateur ?
   const [showUserLogin, setShowUserLogin] = useState(false);
 
-  // La liste des produits — commence avec les produits de démo
-  const [products, setProducts] = useState(dummyProducts);
+  // La liste des produits — vide tant que fetchProducts n'a pas répondu.
+  // On n'utilise plus de produits de démo ici : un produit factice ajouté au
+  // panier (localStorage) aurait un _id invalide pour MongoDB et ferait planter
+  // la commande côté serveur ("Cast to ObjectId failed").
+  const [products, setProducts] = useState([]);
 
   // Le panier — on le charge depuis localStorage pour le conserver entre les visites
   // localStorage c'est la mémoire du navigateur qui reste même après fermeture
@@ -116,17 +118,15 @@ export const AppContextProvider = ({ children }) => {
 
   // ---- RÉCUPÉRER LES PRODUITS ----
   // Cette fonction charge les produits depuis la base de données
-  // Si la base est vide ou inaccessible, on garde les produits de démo
   const fetchProducts = async () => {
     try {
       const { data } = await axios.get('/api/product/list');
       console.log('fetchProducts response:', data);
-      // On remplace les produits de démo seulement si on a de vrais produits
-      if (data.success && data.products.length > 0) {
+      if (data.success) {
         setProducts(data.products);
       }
     } catch {
-      // En cas d'erreur, on garde les produits de démo (dummyProducts)
+      // En cas d'erreur, la liste reste vide plutôt que d'afficher des produits inventés
     }
   };
 
@@ -219,6 +219,22 @@ export const AppContextProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
   }, [cartItems]);
+
+  // ---- NETTOYER LE PANIER DES PRODUITS QUI N'EXISTENT PLUS ----
+  // Un panier sauvegardé dans localStorage peut contenir un _id qui ne correspond
+  // à aucun produit réel (ex: reliquat des anciens produits de démo, ou produit
+  // supprimé depuis par le vendeur). On enlève ces entrées dès que la vraie liste
+  // de produits est chargée, sinon la commande plante côté serveur.
+  useEffect(() => {
+    if (products.length === 0) return;
+    setCartItems(prev => {
+      const validIds = new Set(products.map(p => p._id));
+      const cleaned = Object.fromEntries(
+        Object.entries(prev).filter(([itemId]) => validIds.has(itemId))
+      );
+      return Object.keys(cleaned).length === Object.keys(prev).length ? prev : cleaned;
+    });
+  }, [products]);
 
   // On rassemble toutes les données et fonctions à partager
   // Tout ce qui est listé ici sera accessible depuis n'importe quel composant

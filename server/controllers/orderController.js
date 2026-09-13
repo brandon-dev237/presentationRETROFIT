@@ -5,6 +5,9 @@
 // consulter ses commandes, et confirmer le paiement Stripe.
 // ============================================================
 
+// On importe mongoose pour vérifier qu'un _id est valide avant de le chercher
+import mongoose from "mongoose";
+
 // On importe le modèle de commande pour la base de données
 import order from "../models/Order.js";
 
@@ -17,6 +20,14 @@ import Stripe from "stripe";
 // On initialise Stripe avec notre clé secrète
 // Cette clé permet d'accéder à notre compte Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+// Cherche un produit par son _id, sans planter si l'_id est mal formé
+// (ex: reliquat d'un panier avec un produit de démo) ou si le produit
+// a été supprimé depuis — renvoie null dans les deux cas.
+const findProductSafe = (id) => {
+    if (!mongoose.Types.ObjectId.isValid(id)) return null;
+    return product.findById(id);
+}
 
 
 // ---- COMMANDE EN ESPÈCES (COD) : accessible via POST /api/order/cod ----
@@ -38,7 +49,11 @@ export const placeOrderCOD = async (req, res)=>{
         // reduce() parcourt chaque article et additionne les prix
         let amount = await items.reduce(async (acc, item)=>{
             // On cherche le produit dans la base de données pour avoir son prix réel
-            const prod = await product.findById(item.product);
+            const prod = await findProductSafe(item.product);
+
+            // Le produit peut ne plus exister (supprimé, ou _id invalide venu d'un
+            // panier obsolète) — on l'ignore plutôt que de planter toute la commande
+            if (!prod) return await acc;
 
             // On accumule le prix de l'article (prix * quantité)
             return (await acc) + prod.offerPrice * item.quantity;
@@ -104,7 +119,8 @@ export const placeOrderStripe = async (req, res) => {
 
         // On calcule le montant total avec les prix réels des produits
         let amount = await items.reduce(async (acc, item) => {
-            const prod = await product.findById(item.product);
+            const prod = await findProductSafe(item.product);
+            if (!prod) return await acc;
             return (await acc) + prod.offerPrice * item.quantity;
         }, 0);
 
@@ -118,8 +134,10 @@ export const placeOrderStripe = async (req, res) => {
 
         // On prépare la liste des articles pour la page Stripe
         // Stripe a besoin de connaître le nom et le prix de chaque article
-        const line_items = await Promise.all(items.map(async (item) => {
-            const prod = await product.findById(item.product);
+        // On ignore les produits introuvables (filter Boolean) plutôt que de planter
+        const line_items = (await Promise.all(items.map(async (item) => {
+            const prod = await findProductSafe(item.product);
+            if (!prod) return null;
             return {
                 price_data: {
                     currency: 'eur',
@@ -128,7 +146,7 @@ export const placeOrderStripe = async (req, res) => {
                 },
                 quantity: item.quantity, // quantité commandée
             };
-        }));
+        }))).filter(Boolean);
 
         // On crée une session de paiement sur Stripe
         // success_url = page vers laquelle Stripe redirige après paiement réussi

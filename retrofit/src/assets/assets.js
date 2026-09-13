@@ -170,9 +170,9 @@ export const footerLinks = [
   {
     title: "Accès rapide",
     links: [
-      { text: "Accueil", url: "#" },
-      { text: "Tendances", url: "#" },
-      { text: "Promotions", url: "#" },
+      { text: "Accueil", url: "/" },
+      { text: "Tendances", url: "/#tendances-du-moment" },
+      { text: "Promotions", url: "/#categories" },
       { text: "contacter", url: "#" }
     ]
   },

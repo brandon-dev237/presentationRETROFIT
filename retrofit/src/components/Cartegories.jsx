@@ -16,7 +16,7 @@ const Categories = () => {
   const { navigate } = useAppContext();
 
   return (
-    <div className='mt-16'>
+    <div id='categories' className='mt-16'>
       {/* Titre de la section */}
       <p className='text-2xl md:text-3xl font-medium'>Categories</p>
 

@@ -60,7 +60,14 @@ Mettre à jour l'URL du webhook Stripe pour qu'elle pointe vers `https://<domain
 
 ### 4. Domaine personnalisé (optionnel)
 
-Sur chaque service : Settings → Public Networking → **+ Custom Domain**. Railway fournit un enregistrement **CNAME et un TXT** à ajouter chez le registrar du domaine — les deux sont obligatoires (sans le TXT, le domaine renvoie une 404 même si le CNAME est propagé). Une fois les domaines personnalisés vérifiés, mettre à jour `FRONTEND_URL` et `VITE_BACKEND_URL` en conséquence (et redéployer le frontend, puisque cette variable est figée au build).
+Sur chaque service : Settings → Public Networking → **+ Custom Domain**. L'option n'apparaît qu'une fois le service effectivement déployé (pas seulement "changements en attente").
+
+- **Domaine acheté directement via Railway** (railway.com/domains) : le DNS est déjà géré par Railway, l'attachement est automatique, pas de CNAME/TXT à saisir.
+- **Domaine acheté chez un registrar externe** (Namecheap, OVH, etc.) : Railway fournit un enregistrement **CNAME et un TXT** à ajouter chez le registrar — les deux sont obligatoires (sans le TXT, le domaine renvoie une 404 même si le CNAME est propagé).
+
+Une fois les domaines personnalisés vérifiés, mettre à jour `FRONTEND_URL` et `VITE_BACKEND_URL` en conséquence (et redéployer le frontend, puisque cette variable est figée au build).
+
+⚠️ **Piège du port** : quand Railway ajoute un domaine, il demande de choisir un **port cible**. Railway injecte automatiquement sa propre variable `PORT` dans le conteneur (généralement `8080`), qui prend le dessus sur le `4000` par défaut du code (`process.env.PORT || 4000`). Le port réel sur lequel écoute l'app est visible dans les **logs de déploiement** (`Server running on port XXXX`) — c'est ce port-là qu'il faut choisir pour le domaine, pas celui codé en dur dans `server.js` ou `EXPOSE`. Un mauvais port cible donne une erreur **"Application failed to respond"**.
 
 ### 5. Redéploiements
 
